@@ -7,6 +7,12 @@
     <meta name="keywords" content="Study in Netherlands, Indian students, Dutch universities, Netherlands education, study abroad">
     <title>Indians to Study in Holland | Your Gateway to Dutch Education</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    <script type="text/javascript">
+        (function(){
+            emailjs.init("cBUGtxQ4wpN9eQPsH"); // Public key
+        })();
+    </script>
     
     <style>
         /* Reset and Base Styles */
@@ -921,10 +927,7 @@
                     </div>
                 </div>
                 <div class="contact-form-wrapper">
-                    <form class="contact-form" id="contactForm" action="https://api.web3forms.com/submit" method="POST">
-                        <input type="hidden" name="access_key" value="YOUR_ACCESS_KEY_HERE">
-                        <input type="hidden" name="subject" value="New Inquiry from Indians to Study in Holland Website">
-                        <input type="hidden" name="redirect" value="https://mayankmahajan85.github.io/indians-study-holland/?success=true">
+                    <form class="contact-form" id="contactForm">
                         <div class="form-group">
                             <input type="text" id="name" name="name" placeholder="Your Name" required>
                         </div>
@@ -948,7 +951,13 @@
                         <div class="form-group">
                             <textarea id="message" name="message" placeholder="Tell us about your study plans" rows="4" required></textarea>
                         </div>
-                        <button type="submit" class="btn btn-primary">Send Message</button>
+                        <div style="margin-top: 1rem; padding: 1rem; background: #d4edda; border: 1px solid #c3e6cb; border-radius: 8px; display: none;" id="successMessage">
+                            <p style="color: #155724; margin: 0; font-weight: 600;">✅ Thank you! Your message has been sent successfully. We'll contact you soon at mayankmahajan85@gmail.com!</p>
+                        </div>
+                        <div style="margin-top: 1rem; padding: 1rem; background: #f8d7da; border: 1px solid #f5c6cb; border-radius: 8px; display: none;" id="errorMessage">
+                            <p style="color: #721c24; margin: 0; font-weight: 600;">❌ Sorry, there was an error. Please email us directly at: mayankmahajan85@gmail.com</p>
+                        </div>
+                        <button type="submit" class="btn btn-primary" id="submitBtn">Send Message</button>
                     </form>
                 </div>
             </div>
@@ -1060,8 +1069,51 @@
             lastScroll = currentScroll;
         });
 
-        // Form submission is now handled by Formspree
-        // The form will submit directly to Formspree and send email to mayankmahajan85@gmail.com
+        // Form Submission with EmailJS
+        const contactForm = document.getElementById('contactForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const successMessage = document.getElementById('successMessage');
+        const errorMessage = document.getElementById('errorMessage');
+
+        contactForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Disable button and show loading
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Sending...';
+            successMessage.style.display = 'none';
+            errorMessage.style.display = 'none';
+            
+            // Prepare email parameters
+            const templateParams = {
+                from_name: document.getElementById('name').value,
+                from_email: document.getElementById('email').value,
+                phone: document.getElementById('phone').value,
+                interest: document.getElementById('interest').value,
+                message: document.getElementById('message').value,
+                to_email: 'mayankmahajan85@gmail.com'
+            };
+            
+            // Send email using EmailJS
+            emailjs.send('service_pqc43me', 'template_xny6z3j', templateParams)
+                .then(function(response) {
+                    console.log('SUCCESS!', response.status, response.text);
+                    successMessage.style.display = 'block';
+                    contactForm.reset();
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Send Message';
+                    
+                    // Hide success message after 5 seconds
+                    setTimeout(() => {
+                        successMessage.style.display = 'none';
+                    }, 5000);
+                }, function(error) {
+                    console.log('FAILED...', error);
+                    errorMessage.style.display = 'block';
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Send Message';
+                });
+        });
 
         // Scroll to Top Button
         const createScrollTopButton = () => {
