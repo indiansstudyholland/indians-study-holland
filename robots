@@ -1,0 +1,11 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://indiansstudyholland.github.io/indians-study-holland/sitemap.xml
+
+# Block spam bots
+User-agent: AhrefsBot
+Disallow: /
+
+User-agent: SemrushBot
+Disallow: /
